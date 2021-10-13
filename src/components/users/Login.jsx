@@ -1,5 +1,6 @@
-import React from "react";
-import { Button, View } from "react-native";
+import React, { useState } from "react";
+import { Button, View, Text } from "react-native";
+import * as LocalAuthentication from "expo-local-authentication";
 
 import {
   MainContainer,
@@ -11,7 +12,16 @@ import {
   TextLink,
 } from "../../styles/index";
 
-export default function Login({navigation}) {
+export default function Login({ navigation }) {
+  const [sata, setSata] = useState();
+
+  const getSata = () =>{
+      const sataraw = JSON.stringify(LocalAuthentication.supportedAuthenticationTypesAsync)
+      const sataconv = sataraw
+    setSata(sataconv)
+    console.log(sata)
+  }
+
   return (
     <MainContainer>
       <Head1>Inicio de Sesion</Head1>
@@ -27,8 +37,20 @@ export default function Login({navigation}) {
           <FormInput keyboardType="default" secureTextEntry={true} />
         </FormField>
 
-        <Button title="ENTRAR" color="#5B7FFF" onPress={() => navigation.navigate('MainPage')}/>
+        <Button
+          title="ENTRAR"
+          color="#5B7FFF"
+          onPress={() => navigation.navigate("MainPage")}
+        />
       </View>
+
+      <Button
+          title="TEST"
+          color="#5B7FFF"
+          onPress={() => getSata()}
+        />
+
+        <Text>Esta es la SATA: </Text>
 
       <Divider />
 

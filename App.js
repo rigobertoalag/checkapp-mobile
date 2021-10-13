@@ -6,6 +6,7 @@ import store from './src/app/store'
 import { Provider } from 'react-redux'
 
 import Counter from './src/features/counter/Counter'
+import AnotherCounter from './src/features/counter/AnotherCounter'
 
 function HomeScreen({ navigation }) {
   return (
@@ -15,6 +16,14 @@ function HomeScreen({ navigation }) {
         title="Go to Details"
         onPress={() => navigation.navigate('Details')}
       />
+
+      <View style={{ backgroundColor: 'red'}}>
+        <Counter />
+      </View>
+
+      <View style={{ backgroundColor: 'blue'}}>
+        <AnotherCounter />
+      </View>
     </View>
   );
 }
@@ -38,7 +47,6 @@ function App() {
           <Stack.Screen name="Details" component={DetailsScreen} />
         </Stack.Navigator>
       </NavigationContainer>
-      <Counter/>
     </Provider>
   );
 }

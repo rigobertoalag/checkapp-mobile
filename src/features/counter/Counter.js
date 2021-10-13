@@ -12,14 +12,14 @@ export default function Counter() {
       <View>
         <Button
           title="Increment value"
-          onClick={() => dispatch(increment())}
+          onPress={() => dispatch(increment())}
         >
           Increment
         </Button>
         <Text>{count}</Text>
         <Button
           title="Decrement value"
-          onClick={() => dispatch(decrement())}
+          onPress={() => dispatch(decrement())}
         >
           Decrement
         </Button>

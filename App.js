@@ -24,7 +24,7 @@ function App() {
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
 
           {/* Componentes */}
-          <Stack.Screen name="MainPage" component={MainPage} options={{ headerLeft: null }} />
+          <Stack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

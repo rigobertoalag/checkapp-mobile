@@ -18,7 +18,7 @@ function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login">
+        <Stack.Navigator initialRouteName="MainPage">
 
           {/* Pantallas de usuario */}
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />

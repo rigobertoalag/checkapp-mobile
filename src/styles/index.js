@@ -36,3 +36,26 @@ export const TextLink = styled.Text`
   font-family: Roboto;
   font-size: 18px;
 `;
+export const GreyContainer = styled.View`
+  height: 60%;
+  z-index: 0;
+  padding-top: 25%;
+  align-items: center;
+  elevation: 0;
+`;
+export const InfoContainer = styled.View`
+  height: 25%;
+  width: 90%;
+  border-radius: 20px;
+  background-color: #c4c4c4;
+`;
+export const SmText = styled.Text`
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  text-align: center;
+  margin-top: 15%;
+  color: rgba(250, 250, 250, 0.9);
+`;

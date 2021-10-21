@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { Button, View, Alert } from "react-native";
+import { Button, View, Alert, Text } from "react-native";
 import * as LocalAuthentication from "expo-local-authentication";
 
 import {
@@ -13,6 +13,41 @@ import {
 } from "../../styles/index";
 
 export default function Login({ navigation }) {
+
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+
+  const sendData = () =>{
+    console.log('data', JSON.parse.email)
+  }
+
+  console.log(email)
+
+  const [response, setResponse] = useState([])
+
+  const getDataTest = async () => {
+    try {
+      const response = await fetch(
+        'https://lara-api-sanctum.herokuapp.com/api/login',{
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: 'rigo@mail.com',
+            password: 'rigo123'
+          })
+        }
+      );
+      const json = await response.json();
+      setResponse(json.token)
+      console.log(json)
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
 
   // Check if hardware supports biometrics
@@ -78,14 +113,15 @@ export default function Login({ navigation }) {
       <Head1>Inicio de Sesion</Head1>
 
       <View>
+
         <FormField>
           <FormLabel>Correo electronico</FormLabel>
-          <FormInput keyboardType="email-address" />
+          <FormInput keyboardType="email-address" onChange={setEmail} name='email'/>
         </FormField>
 
         <FormField>
           <FormLabel>Contraseña</FormLabel>
-          <FormInput keyboardType="default" secureTextEntry={true} />
+          <FormInput keyboardType="default" secureTextEntry={true} onChange={setPassword} name='password'/>
         </FormField>
 
         {isBiometricSupported ? (
@@ -106,6 +142,12 @@ export default function Login({ navigation }) {
       <Divider />
 
       <TextLink>¿Olvidaste tu contraseña?</TextLink>
+
+      <Button 
+        title="send"
+        onPress={sendData}
+      />
+      <Text>La respuesta:</Text>
     </MainContainer>
   );
 }

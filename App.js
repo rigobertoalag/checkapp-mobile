@@ -12,6 +12,7 @@ import { Provider } from 'react-redux'
 import Login from './src/components/users/Login'
 import MainPage from './src/components/MainPage'
 import MainPageTest from './src/components/MainPageTest'
+import GetDataScreen from './src/features/getData/GetDataScreen'
 
 const Stack = createNativeStackNavigator();
 
@@ -19,11 +20,11 @@ function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login">
+        <Stack.Navigator initialRouteName="GetData">
 
           {/* Pantallas de usuario */}
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-          {/* <Stack.Screen name="MainPageTest" component={MainPageTest} options={{ headerShown: false }} /> */}
+          {/* <Stack.Screen name="GetDataScreen" component={GetDataScreen} options={{ headerShown: false }} /> */}
 
           {/* Componentes */}
           <Stack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }} />

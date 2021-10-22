@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Button, View, Alert, Text } from "react-native";
 import * as LocalAuthentication from "expo-local-authentication";
 
+import { useSelector, useDispatch } from 'react-redux'
+import { setToken } from '../../utils/slices'
+
 import {
   MainContainer,
   Head1,
@@ -16,6 +19,8 @@ export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [credentials, setCredentials] = useState({});
+
+  const dispatch = useDispatch()
 
   const getCredentials = () => {
     return fetch("https://lara-api-sanctum.herokuapp.com/api/login", {
@@ -33,14 +38,18 @@ export default function Login({ navigation }) {
       .then((json) => {
         const credential = json;
         setCredentials(credential);
-
         console.log("antes de entrar", credentials.token);
+
         if (credentials.token) {
-          navigation.navigate("MainPage");
+          dispatch(setToken(credentials))
+          navigation.navigate("MainPage")
+
           console.log("entra", credentials);
+
         } else if (!credentials.token) {
           console.log("no entra", credentials);
         }
+
       })
       .catch((error) => {
         console.error(error);

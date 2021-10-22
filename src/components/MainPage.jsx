@@ -4,17 +4,12 @@ import { View, Text, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { GreyContainer, SmText, InfoContainer } from "../styles/index";
+import { useSelector } from "react-redux";
 
 export default function MainPage() {
-  //Respuesta dummy de los datos del usuario
-  const userData = {
-    user: {
-      name: "Alma Marcela",
-      avatar: { uri: "https://i.pravatar.cc/300?img=16" },
-      lastLogin: "15/10/2021 12:18:30",
-      areLoginToday: false,
-    },
-  };
+
+  const credentials = useSelector(state => state.token.value)
+  const staticAvatar = { uri: "https://i.pravatar.cc/300?img=17" }
 
   return (
     <View style={{ height: "100%" }}>
@@ -24,13 +19,13 @@ export default function MainPage() {
         style={{
           height: "40%",
           backgroundColor: "#5b7fff",
-          // borderBottomRightRadius: '5px',
-          // borderBottomLeftRadius: '5px',
+          borderBottomRightRadius: 5,
+          borderBottomLeftRadius: 5,
         }}
       >
-        <SmText>Bienvenido/a, {userData.user.name}</SmText>
+        <SmText>Bienvenido/a, {credentials.user.name}</SmText>
         <Image
-          source={userData.user.avatar}
+          source={staticAvatar}
           style={{
             width: 156,
             height: 156,
@@ -74,9 +69,10 @@ export default function MainPage() {
         <Text>Boton verde</Text>
       </LinearGradient>
 
+
       <GreyContainer>
         <InfoContainer>
-          <SmText>Ultimo inicio de sesion: {userData.user.lastLogin}</SmText>
+          <SmText>Ultimo inicio de sesion: {credentials.user.created_at}</SmText>
         </InfoContainer>
       </GreyContainer>
     </View>

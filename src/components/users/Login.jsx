@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Button, View, Alert, Text } from "react-native";
 import * as LocalAuthentication from "expo-local-authentication";
 
@@ -13,39 +13,38 @@ import {
 } from "../../styles/index";
 
 export default function Login({ navigation }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [credentials, setCredentials] = useState({});
 
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const getCredentials = () => {
+    return fetch("https://lara-api-sanctum.herokuapp.com/api/login", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        const credential = json;
+        setCredentials(credential);
 
-  const sendData = () =>{
-    console.log('data', JSON.parse.email)
-  }
-
-  console.log(email)
-
-  const [response, setResponse] = useState([])
-
-  const getDataTest = async () => {
-    try {
-      const response = await fetch(
-        'https://lara-api-sanctum.herokuapp.com/api/login',{
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: 'rigo@mail.com',
-            password: 'rigo123'
-          })
+        console.log("antes de entrar", credentials.token);
+        if (credentials.token) {
+          navigation.navigate("MainPage");
+          console.log("entra", credentials);
+        } else if (!credentials.token) {
+          console.log("no entra", credentials);
         }
-      );
-      const json = await response.json();
-      setResponse(json.token)
-      console.log(json)
-    } catch (error) {
-      console.error(error);
-    }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
@@ -74,7 +73,6 @@ export default function Login({ navigation }) {
   const handleBiometricAuth = async () => {
     // Check if hardware supports biometrics
     const isBiometricAvailable = await LocalAuthentication.hasHardwareAsync();
-    
 
     // Fallback to default authentication method (password) if Fingerprint is not available
     if (!isBiometricAvailable)
@@ -103,8 +101,8 @@ export default function Login({ navigation }) {
       disableDeviceFallback: true,
     });
 
-    if (biometricAuth && biometricAuth.success){
-      navigation.navigate("MainPage")
+    if (biometricAuth && biometricAuth.success) {
+      navigation.navigate("MainPage");
     }
   };
 
@@ -113,18 +111,27 @@ export default function Login({ navigation }) {
       <Head1>Inicio de Sesion</Head1>
 
       <View>
-
         <FormField>
           <FormLabel>Correo electronico</FormLabel>
-          <FormInput keyboardType="email-address" onChange={setEmail} name='email'/>
+          <FormInput
+            keyboardType="email-address"
+            onChangeText={setEmail}
+            value={email}
+            name="email"
+          />
         </FormField>
 
         <FormField>
           <FormLabel>Contraseña</FormLabel>
-          <FormInput keyboardType="default" secureTextEntry={true} onChange={setPassword} name='password'/>
+          <FormInput
+            keyboardType="default"
+            secureTextEntry={true}
+            onChangeText={setPassword}
+            name="password"
+          />
         </FormField>
 
-        {isBiometricSupported ? (
+        {/* {isBiometricSupported ? (
           <Button
             title="ENTRAR"
             color="#5B7FFF"
@@ -136,18 +143,14 @@ export default function Login({ navigation }) {
             color="#5B7FFF"
             onPress={() => navigation.navigate("MainPage")}
           />
-        )}
+        )} */}
+
+        <Button title="ENTRAR" color="#5B7FFF" onPress={getCredentials} />
       </View>
 
       <Divider />
 
       <TextLink>¿Olvidaste tu contraseña?</TextLink>
-
-      <Button 
-        title="send"
-        onPress={sendData}
-      />
-      <Text>La respuesta:</Text>
     </MainContainer>
   );
 }

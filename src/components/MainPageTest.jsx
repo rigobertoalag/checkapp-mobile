@@ -5,7 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 
 import { GreyContainer, SmText, InfoContainer } from "../styles/index";
 
-export default function MainPage() {
+export default function MainPageTest() {
   //Respuesta dummy de los datos del usuario
   const userData = {
     user: {

@@ -1,6 +1,9 @@
-import React, {useState, useEffect} from "react";
-import { Button, View, Alert } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Button, View, Alert, Text } from "react-native";
 import * as LocalAuthentication from "expo-local-authentication";
+
+import { useSelector, useDispatch } from 'react-redux'
+import { setToken } from '../../utils/slices'
 
 import {
   MainContainer,
@@ -13,6 +16,46 @@ import {
 } from "../../styles/index";
 
 export default function Login({ navigation }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [credentials, setCredentials] = useState({});
+
+  const dispatch = useDispatch()
+
+  const getCredentials = () => {
+    return fetch("https://lara-api-sanctum.herokuapp.com/api/login", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        const credential = json;
+        setCredentials(credential);
+        console.log("antes de entrar", credentials.token);
+
+        if (credentials.token) {
+          dispatch(setToken(credentials))
+          navigation.navigate("MainPage")
+
+          console.log("entra", credentials);
+
+        } else if (!credentials.token) {
+          console.log("no entra", credentials);
+        }
+
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
 
   // Check if hardware supports biometrics
@@ -39,7 +82,6 @@ export default function Login({ navigation }) {
   const handleBiometricAuth = async () => {
     // Check if hardware supports biometrics
     const isBiometricAvailable = await LocalAuthentication.hasHardwareAsync();
-    
 
     // Fallback to default authentication method (password) if Fingerprint is not available
     if (!isBiometricAvailable)
@@ -68,8 +110,8 @@ export default function Login({ navigation }) {
       disableDeviceFallback: true,
     });
 
-    if (biometricAuth && biometricAuth.success){
-      navigation.navigate("MainPage")
+    if (biometricAuth && biometricAuth.success) {
+      navigation.navigate("MainPage");
     }
   };
 
@@ -80,15 +122,25 @@ export default function Login({ navigation }) {
       <View>
         <FormField>
           <FormLabel>Correo electronico</FormLabel>
-          <FormInput keyboardType="email-address" />
+          <FormInput
+            keyboardType="email-address"
+            onChangeText={setEmail}
+            value={email}
+            name="email"
+          />
         </FormField>
 
         <FormField>
           <FormLabel>Contraseña</FormLabel>
-          <FormInput keyboardType="default" secureTextEntry={true} />
+          <FormInput
+            keyboardType="default"
+            secureTextEntry={true}
+            onChangeText={setPassword}
+            name="password"
+          />
         </FormField>
 
-        {isBiometricSupported ? (
+        {/* {isBiometricSupported ? (
           <Button
             title="ENTRAR"
             color="#5B7FFF"
@@ -100,7 +152,9 @@ export default function Login({ navigation }) {
             color="#5B7FFF"
             onPress={() => navigation.navigate("MainPage")}
           />
-        )}
+        )} */}
+
+        <Button title="ENTRAR" color="#5B7FFF" onPress={getCredentials} />
       </View>
 
       <Divider />

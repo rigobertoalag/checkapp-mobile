@@ -11,6 +11,9 @@ import { Provider } from 'react-redux'
 //Components
 import Login from './src/components/users/Login'
 import MainPage from './src/components/MainPage'
+import CheckIn from './src/components/checks/CheckIn'
+import CheckOut from './src/components/checks/CheckOut'
+
 import MainPageTest from './src/components/MainPageTest'
 import GetDataScreen from './src/features/getData/GetDataScreen'
 
@@ -23,11 +26,13 @@ function App() {
         <Stack.Navigator initialRouteName="GetData">
 
           {/* Pantallas de usuario */}
-          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-          {/* <Stack.Screen name="GetDataScreen" component={GetDataScreen} options={{ headerShown: false }} /> */}
+          {/* <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} /> */}
+          <Stack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }} />
 
           {/* Componentes */}
-          <Stack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }} />
+          {/* <Stack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }} /> */}
+          <Stack.Screen name="CheckIn" component={CheckIn} />
+          <Stack.Screen name="CheckOut" component={CheckOut} />
           {/* <Stack.Screen name="MainPageTest" component={MainPageTest} options={{ headerShown: false }} /> */}
         </Stack.Navigator>
       </NavigationContainer>

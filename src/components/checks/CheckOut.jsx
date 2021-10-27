@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View, Button, Image } from "react-native";
 import { Camera } from "expo-camera";
 
-export default function CheckOut() {
+export default function CheckOut({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [photo, setPhoto] = useState({});
 
@@ -27,6 +27,36 @@ export default function CheckOut() {
       setPhoto(photo);
       console.log(photo.uri);
     }
+  };
+
+  const postPhoto = () => {
+    var imageForm = {
+      uri: photo.uri,
+      type: "image/jpeg",
+      name: "image.jpg",
+    };
+
+    var form = new FormData();
+    form.append("location", "testereo"); //codigo duro
+    form.append("image", imageForm);
+
+    return fetch("https://lara-api-sanctum.herokuapp.com/api/checkin", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "multipart/form-data",
+        Authorization: "Bearer 145|OhWnjbdmyfWCGKVwlVkw2DpVP61uJ3erpsgFSAm5", //codigo duro
+      },
+      body: form,
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log("registro exitoso", json);
+        navigation.navigate("MainPage");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   return (
@@ -68,15 +98,16 @@ export default function CheckOut() {
             </View>
           </>
         ) : (
+          <>
           <Image
             style={{ paddingTop: 420 }}
             source={{
               uri: photo.uri,
             }}
           />
+          <Button title="Enviar" onPress={postPhoto} />
+          </>
         )}
-
-        {/* <Text>{photo.uri}</Text> */}
       </View>
     </View>
   );

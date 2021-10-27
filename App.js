@@ -14,7 +14,6 @@ import MainPage from './src/components/MainPage'
 import CheckIn from './src/components/checks/CheckIn'
 import CheckOut from './src/components/checks/CheckOut'
 
-import MainPageTest from './src/components/MainPageTest'
 import GetDataScreen from './src/features/getData/GetDataScreen'
 
 const Stack = createNativeStackNavigator();

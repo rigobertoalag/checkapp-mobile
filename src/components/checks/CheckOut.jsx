@@ -1,15 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View, Button, Image } from "react-native";
 import { Camera } from "expo-camera";
+import * as Location from "expo-location";
 
 export default function CheckOut({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [photo, setPhoto] = useState({});
 
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
-      setHasPermission(status === "granted");
+      const statusCamera  = await Camera.requestPermissionsAsync();
+      console.log(statusCamera.granted)
+      setHasPermission(statusCamera.granted);
+
+      const statusLocation = await Location.requestForegroundPermissionsAsync();
+      console.log(statusLocation.granted)
+      if (!statusLocation.granted) {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
     })();
   }, []);
 
@@ -36,8 +51,14 @@ export default function CheckOut({ navigation }) {
       name: "image.jpg",
     };
 
+    var latitude = [location.coords.latitude]
+    var longitude = [location.coords.longitude]
+
+    var fullLocation = JSON.stringify(latitude.concat(longitude))
+    console.log(fullLocation)
+
     var form = new FormData();
-    form.append("location", "testereo"); //codigo duro
+    form.append("location", fullLocation);
     form.append("image", imageForm);
 
     return fetch("https://lara-api-sanctum.herokuapp.com/api/checkin", {

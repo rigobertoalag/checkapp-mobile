@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Button, View, Alert, Text } from "react-native";
+import { Button, View, Alert } from "react-native";
 import * as LocalAuthentication from "expo-local-authentication";
 
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { setToken } from '../../utils/slices'
 
 import {
@@ -38,13 +38,10 @@ export default function Login({ navigation }) {
       .then((json) => {
         const credential = json;
         setCredentials(credential);
-        console.log("antes de entrar", credentials.token);
 
         if (credentials.token) {
           dispatch(setToken(credentials))
           navigation.navigate("MainPage")
-
-          console.log("entra", credentials);
 
         } else if (!credentials.token) {
           console.log("no entra", credentials);

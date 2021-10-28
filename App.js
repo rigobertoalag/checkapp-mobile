@@ -25,14 +25,13 @@ function App() {
         <Stack.Navigator initialRouteName="GetData">
 
           {/* Pantallas de usuario */}
-          {/* <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} /> */}
-          <Stack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }} />
+          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+          {/* <Stack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }} /> */}
 
           {/* Componentes */}
-          {/* <Stack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }} /> */}
+          <Stack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }} />
           <Stack.Screen name="CheckIn" component={CheckIn} />
           <Stack.Screen name="CheckOut" component={CheckOut} />
-          {/* <Stack.Screen name="MainPageTest" component={MainPageTest} options={{ headerShown: false }} /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

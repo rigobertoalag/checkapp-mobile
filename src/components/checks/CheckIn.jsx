@@ -146,6 +146,7 @@ export default function CheckIn({ navigation }) {
                   padding: '2%',
                   width: '50%'
                 }}
+                onPress={()=>setPhoto({})}
               >
                 <Text style={{ fontSize: 24, color: "white", alignSelf: 'center' }}>Repetir foto</Text>
               </TouchableOpacity>

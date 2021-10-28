@@ -1,16 +1,55 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Image, TouchableHighlight } from "react-native";
-
+import { useSelector } from "react-redux";
+import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { GreyContainer, SmText, InfoContainer } from "../styles/index";
-import { useSelector } from "react-redux";
 
 export default function MainPage({ navigation }) {
   const credentials = useSelector((state) => state.token.value);
+
+  const [lastCheckIn, setLastCheckIn] = useState();
+
   const staticAvatar = { uri: "https://i.pravatar.cc/300?img=17" };
-  const staticName = 'tester'
-  const staticCreated_at = '25/10/00'
+
+  const getLastCheckIn = async () => {
+    try {
+      const response = await fetch(
+        "https://lara-api-sanctum.herokuapp.com/api/checkin",
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "multipart/form-data",
+            Authorization: "Bearer " + credentials.token,
+          },
+        }
+      );
+      const json = await response.json();
+      let array = json.message;
+      let lastCheck = array.pop();
+
+      const formated_Date = lastCheck.created_at;
+      const date = new Date(formated_Date);
+      const d = `${date.getDate()}/${
+        date.getMonth() + 1
+      }/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+
+      setLastCheckIn(d);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getLastCheckIn();
+      return () => {
+        setLastCheckIn();
+      };
+    }, [])
+  );
 
   return (
     <View style={{ height: "100%" }}>
@@ -24,7 +63,7 @@ export default function MainPage({ navigation }) {
           borderBottomLeftRadius: 5,
         }}
       >
-        <SmText>Bienvenido/a, {staticName}</SmText>
+        <SmText>Bienvenido/a, {credentials.user.name}</SmText>
         <Image
           source={staticAvatar}
           style={{
@@ -69,7 +108,10 @@ export default function MainPage({ navigation }) {
           borderRadius: 20,
         }}
       >
-        <TouchableHighlight onPress={() => navigation.navigate("CheckIn")} style={{width: '100%', height: '100%'}}>
+        <TouchableHighlight
+          onPress={() => navigation.navigate("CheckIn")}
+          style={{ width: "100%", height: "100%" }}
+        >
           <Text>Inicar turno</Text>
         </TouchableHighlight>
       </LinearGradient>
@@ -87,16 +129,21 @@ export default function MainPage({ navigation }) {
           borderRadius: 20,
         }}
       >
-        <TouchableHighlight onPress={() => navigation.navigate("CheckOut")} style={{width: '100%', height: '100%'}}>
+        <TouchableHighlight
+          onPress={() => navigation.navigate("CheckOut")}
+          style={{ width: "100%", height: "100%" }}
+        >
           <Text>Terminar turno</Text>
         </TouchableHighlight>
       </LinearGradient>
 
       <GreyContainer>
         <InfoContainer>
-          <SmText>
-            Ultimo inicio de sesion: {staticCreated_at}
-          </SmText>
+          {lastCheckIn !== "" ? (
+            <SmText>Ultimo turno: {lastCheckIn}</SmText>
+          ) : (
+            <SmText>Cargando...</SmText>
+          )}
         </InfoContainer>
       </GreyContainer>
     </View>

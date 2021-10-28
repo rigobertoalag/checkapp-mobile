@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Text, View, TouchableOpacity, Image, Button } from "react-native";
 import { Camera } from "expo-camera";
 import * as Location from "expo-location";
+import { useSelector } from "react-redux";
 
 export default function CheckIn({ navigation }) {
+  const token = useSelector((state) => state.token.value);
+
   const [hasPermission, setHasPermission] = useState(null);
   const [photo, setPhoto] = useState({});
 
@@ -13,11 +16,9 @@ export default function CheckIn({ navigation }) {
   useEffect(() => {
     (async () => {
       const statusCamera = await Camera.requestPermissionsAsync();
-      console.log(statusCamera.granted);
       setHasPermission(statusCamera.granted);
 
       const statusLocation = await Location.requestForegroundPermissionsAsync();
-      console.log(statusLocation.granted);
       if (!statusLocation.granted) {
         setErrorMsg("Permission to access location was denied");
         return;
@@ -28,19 +29,11 @@ export default function CheckIn({ navigation }) {
     })();
   }, []);
 
-  if (hasPermission === null) {
-    return <View />;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
-
   const takePhoto = async () => {
     if (this.camera) {
       const options = { quality: 0.7, base64: true };
       let photo = await this.camera.takePictureAsync(options);
       setPhoto(photo);
-      console.log(photo.uri);
     }
   };
 
@@ -55,7 +48,6 @@ export default function CheckIn({ navigation }) {
     var longitude = [location.coords.longitude];
 
     var fullLocation = JSON.stringify(latitude.concat(longitude));
-    console.log(fullLocation);
 
     var form = new FormData();
     form.append("location", fullLocation);
@@ -66,7 +58,7 @@ export default function CheckIn({ navigation }) {
       headers: {
         Accept: "application/json",
         "Content-Type": "multipart/form-data",
-        Authorization: "Bearer 145|OhWnjbdmyfWCGKVwlVkw2DpVP61uJ3erpsgFSAm5", //codigo duro
+        Authorization: "Bearer " + token.token,
       },
       body: form,
     })
@@ -79,6 +71,13 @@ export default function CheckIn({ navigation }) {
         console.error(error);
       });
   };
+
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -119,36 +118,44 @@ export default function CheckIn({ navigation }) {
             </View>
           </>
         ) : (
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <Image
               style={{ paddingTop: 420 }}
               source={{
                 uri: photo.uri,
               }}
             />
-            <View style={{alignItems: 'center'}}>
+            <View style={{ alignItems: "center" }}>
               <TouchableOpacity
                 style={{
                   backgroundColor: "green",
-                  marginTop: '10%',
-                  padding: '5%',
-                  width: '90%'
+                  marginTop: "10%",
+                  padding: "5%",
+                  width: "90%",
                 }}
                 onPress={postPhoto}
               >
-                <Text style={{ fontSize: 24, color: "white", alignSelf: 'center' }}>INICIAR TURNO</Text>
+                <Text
+                  style={{ fontSize: 24, color: "white", alignSelf: "center" }}
+                >
+                  INICIAR TURNO
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={{
                   backgroundColor: "red",
-                  marginTop: '20%',
-                  padding: '2%',
-                  width: '50%'
+                  marginTop: "20%",
+                  padding: "2%",
+                  width: "50%",
                 }}
-                onPress={()=>setPhoto({})}
+                onPress={() => setPhoto({})}
               >
-                <Text style={{ fontSize: 24, color: "white", alignSelf: 'center' }}>Repetir foto</Text>
+                <Text
+                  style={{ fontSize: 24, color: "white", alignSelf: "center" }}
+                >
+                  Repetir foto
+                </Text>
               </TouchableOpacity>
             </View>
           </View>

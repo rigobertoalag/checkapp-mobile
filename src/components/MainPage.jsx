@@ -16,7 +16,7 @@ export default function MainPage({ navigation }) {
   const getLastCheckIn = async () => {
     try {
       const response = await fetch(
-        "https://lara-api-sanctum.herokuapp.com/api/checkin",
+        "https://lara-api-sanctum.herokuapp.com/api/statuscheck",
         {
           method: "GET",
           headers: {

@@ -142,7 +142,7 @@ export default function CheckOut({ navigation }) {
                 <Text
                   style={{ fontSize: 24, color: "white", alignSelf: "center" }}
                 >
-                  INICIAR TURNO
+                  TERMINAR TURNO
                 </Text>
               </TouchableOpacity>
 

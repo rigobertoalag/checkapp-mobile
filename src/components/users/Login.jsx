@@ -37,7 +37,7 @@ export default function Login({ navigation }) {
       setNoEmail(true);
       setNoPass(true);
 
-      setUserLogin("Cargando");
+      setUserLogin("Cargando...");
 
       return fetch("https://lara-api-sanctum.herokuapp.com/api/login", {
         method: "POST",
@@ -73,10 +73,10 @@ export default function Login({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      // getCheckTurn();
       return () => {
-        setEmail("")
-        setPassword("")
+        setEmail(""),
+        setPassword(""),
+        setNoMatchCredentials(""),
         setUserLogin("")
       };
     }, [])

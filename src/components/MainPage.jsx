@@ -152,11 +152,11 @@ export default function MainPage({ navigation }) {
                 </SmText>
               ) : checkTurn.ins && !checkTurn.outs ? (
                 <SmText>
-                  Inicio de turno: {moment(checkTurn.ins.created_at).format("DD-MM-YY")}, falta realizar tu salida...
+                  Inicio de turno: {moment(checkTurn.ins.created_at).format("DD-MM-YY hh:mm")}, falta realizar tu salida...
                 </SmText>
               ) : (
                 <SmText>
-                  Ultimo inicio: {moment(checkTurn.ins.created_at).format("DD-MM-YY mm:ss")}, ultima salida: {moment(checkTurn.outs.created_at).format("DD-MM-YY mm:ss")}
+                  Ultimo inicio: {moment(checkTurn.ins.created_at).format("DD-MM-YY hh:mm")}, ultima salida: {moment(checkTurn.outs.created_at).format("DD-MM-YY hh:mm")}
                 </SmText>
               )}
             </InfoContainer>

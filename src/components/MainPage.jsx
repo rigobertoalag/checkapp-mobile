@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Image, TouchableHighlight } from "react-native";
+import { View, Text, Image, TouchableHighlight, Button } from "react-native";
 import { useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -31,6 +31,28 @@ export default function MainPage({ navigation }) {
       const check = json;
 
       setCheckTurn(check);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const logOut = async () => {
+    try {
+      const response = await fetch(
+        "https://lara-api-sanctum.herokuapp.com/api/logout",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "multipart/form-data",
+            Authorization: "Bearer " + credentials.token,
+          },
+        }
+      );
+      const json = await response.json();
+      const logout = json;
+      console.log('logout', logout)
+      navigation.navigate("Login")
     } catch (error) {
       console.error(error);
     }
@@ -138,11 +160,20 @@ export default function MainPage({ navigation }) {
                 </SmText>
               )}
             </InfoContainer>
+            <Button
+        title='cerrar sesion'
+        onPress={logOut}
+      />
           </GreyContainer>
         </>
       ) : (
         <Text style={{ alignSelf: "center", color: "black" }}>Cargando...</Text>
       )}
+
+      <Button
+        title='cerrar sesion'
+        onPress={logOut}
+      />
     </View>
   );
 }

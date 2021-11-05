@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, View, Alert, Text } from "react-native";
 import * as LocalAuthentication from "expo-local-authentication";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { useDispatch } from "react-redux";
 import { setToken } from "../../utils/slices";
@@ -69,6 +70,17 @@ export default function Login({ navigation }) {
         });
     }
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // getCheckTurn();
+      return () => {
+        setEmail("")
+        setPassword("")
+        setUserLogin("")
+      };
+    }, [])
+  );
 
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
 

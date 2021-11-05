@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View, Button, Image } from "react-native";
 import { Camera } from "expo-camera";
 import * as Location from "expo-location";
+import { useSelector } from "react-redux";
 
 export default function CheckOut({ navigation }) {
+  const token = useSelector((state) => state.token.value);
+
   const [hasPermission, setHasPermission] = useState(null);
   const [photo, setPhoto] = useState({});
 
@@ -12,12 +15,12 @@ export default function CheckOut({ navigation }) {
 
   useEffect(() => {
     (async () => {
-      const statusCamera  = await Camera.requestPermissionsAsync();
-      console.log(statusCamera.granted)
+      const statusCamera = await Camera.requestPermissionsAsync();
+      console.log(statusCamera.granted);
       setHasPermission(statusCamera.granted);
 
       const statusLocation = await Location.requestForegroundPermissionsAsync();
-      console.log(statusLocation.granted)
+      console.log(statusLocation.granted);
       if (!statusLocation.granted) {
         setErrorMsg("Permission to access location was denied");
         return;
@@ -51,22 +54,22 @@ export default function CheckOut({ navigation }) {
       name: "image.jpg",
     };
 
-    var latitude = [location.coords.latitude]
-    var longitude = [location.coords.longitude]
+    var latitude = [location.coords.latitude];
+    var longitude = [location.coords.longitude];
 
-    var fullLocation = JSON.stringify(latitude.concat(longitude))
-    console.log(fullLocation)
+    var fullLocation = JSON.stringify(latitude.concat(longitude));
+    console.log(fullLocation);
 
     var form = new FormData();
     form.append("location", fullLocation);
     form.append("image", imageForm);
 
-    return fetch("https://lara-api-sanctum.herokuapp.com/api/checkin", {
+    return fetch("https://lara-api-sanctum.herokuapp.com/api/checkout", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "multipart/form-data",
-        Authorization: "Bearer 145|OhWnjbdmyfWCGKVwlVkw2DpVP61uJ3erpsgFSAm5", //codigo duro
+        Authorization: "Bearer " + token.token,
       },
       body: form,
     })
@@ -119,15 +122,47 @@ export default function CheckOut({ navigation }) {
             </View>
           </>
         ) : (
-          <>
-          <Image
-            style={{ paddingTop: 420 }}
-            source={{
-              uri: photo.uri,
-            }}
-          />
-          <Button title="Enviar" onPress={postPhoto} />
-          </>
+          <View style={{ flex: 1 }}>
+            <Image
+              style={{ paddingTop: 420 }}
+              source={{
+                uri: photo.uri,
+              }}
+            />
+            <View style={{ alignItems: "center" }}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "green",
+                  marginTop: "10%",
+                  padding: "5%",
+                  width: "90%",
+                }}
+                onPress={postPhoto}
+              >
+                <Text
+                  style={{ fontSize: 24, color: "white", alignSelf: "center" }}
+                >
+                  INICIAR TURNO
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "red",
+                  marginTop: "20%",
+                  padding: "2%",
+                  width: "50%",
+                }}
+                onPress={() => setPhoto({})}
+              >
+                <Text
+                  style={{ fontSize: 24, color: "white", alignSelf: "center" }}
+                >
+                  Repetir foto
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         )}
       </View>
     </View>

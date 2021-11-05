@@ -49,7 +49,7 @@ export const InfoContainer = styled.View`
   border-radius: 20px;
   background-color: #c4c4c4;
 `;
-export const SmText = styled.Text`
+export const SmTextTitle = styled.Text`
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
@@ -57,5 +57,15 @@ export const SmText = styled.Text`
   line-height: 16px;
   text-align: center;
   margin-top: 15%;
+  color: rgba(250, 250, 250, 0.9);
+`;
+
+export const SmText = styled.Text`
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  text-align: center;
   color: rgba(250, 250, 250, 0.9);
 `;

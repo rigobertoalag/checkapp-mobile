@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Button, View, Alert } from "react-native";
+import { Button, View, Alert, Text } from "react-native";
 import * as LocalAuthentication from "expo-local-authentication";
 
-import { useDispatch } from 'react-redux'
-import { setToken } from '../../utils/slices'
+import { useDispatch } from "react-redux";
+import { setToken } from "../../utils/slices";
 
 import {
   MainContainer,
@@ -18,39 +18,52 @@ import {
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [credentials, setCredentials] = useState({});
 
-  const dispatch = useDispatch()
+  const [noEmail, setNoEmail] = useState("");
+  const [noPass, setNoPass] = useState("");
+
+  const [noMatchCredentials, setNoMatchCredentials] = useState("");
+
+  const dispatch = useDispatch();
 
   const getCredentials = () => {
-    return fetch("https://lara-api-sanctum.herokuapp.com/api/login", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        const credential = json;
-        setCredentials(credential);
+    if (!email) {
+      setNoEmail(false);
+    } else if (!password) {
+      setNoPass(false);
+    } else if (email && password) {
+      setNoEmail(true);
+      setNoPass(true);
 
-        if (credentials.token) {
-          dispatch(setToken(credentials))
-          navigation.navigate("MainPage")
-
-        } else if (!credentials.token) {
-          console.log("no entra", credentials);
-        }
-
+      return fetch("https://lara-api-sanctum.herokuapp.com/api/login", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
       })
-      .catch((error) => {
-        console.error(error);
-      });
+        .then((response) => response.json())
+        .then((json) => {
+          const credential = json;
+          console.log("credential msg", credential);
+
+          if (credential.token) {
+            dispatch(setToken(credential));
+            navigation.navigate("MainPage");
+          } else if (credential.message == "undefined") {
+            console.log("bug");
+          } else if (credential.message) {
+            setNoMatchCredentials(true);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   };
 
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
@@ -125,6 +138,9 @@ export default function Login({ navigation }) {
             value={email}
             name="email"
           />
+          {noEmail === false ? (
+            <Text style={{ color: "red" }}>Por favor ingresa un correo</Text>
+          ) : null}
         </FormField>
 
         <FormField>
@@ -135,6 +151,11 @@ export default function Login({ navigation }) {
             onChangeText={setPassword}
             name="password"
           />
+          {noPass === false ? (
+            <Text style={{ color: "red" }}>
+              Por favor ingresa tu contraseña
+            </Text>
+          ) : null}
         </FormField>
 
         {/* {isBiometricSupported ? (
@@ -152,6 +173,11 @@ export default function Login({ navigation }) {
         )} */}
 
         <Button title="ENTRAR" color="#5B7FFF" onPress={getCredentials} />
+        {noMatchCredentials === true ? (
+          <Text style={{ color: "red", marginTop: 10 }}>
+            Error al iniciar: Tu email o contraseña son incorrectos
+          </Text>
+        ) : null}
       </View>
 
       <Divider />

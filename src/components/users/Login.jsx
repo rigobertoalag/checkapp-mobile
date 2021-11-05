@@ -18,6 +18,7 @@ import {
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [userLogin, setUserLogin] = useState();
 
   const [noEmail, setNoEmail] = useState("");
   const [noPass, setNoPass] = useState("");
@@ -34,6 +35,8 @@ export default function Login({ navigation }) {
     } else if (email && password) {
       setNoEmail(true);
       setNoPass(true);
+
+      setUserLogin("Cargando");
 
       return fetch("https://lara-api-sanctum.herokuapp.com/api/login", {
         method: "POST",
@@ -58,6 +61,7 @@ export default function Login({ navigation }) {
             console.log("bug");
           } else if (credential.message) {
             setNoMatchCredentials(true);
+            setUserLogin("");
           }
         })
         .catch((error) => {
@@ -124,7 +128,7 @@ export default function Login({ navigation }) {
       navigation.navigate("MainPage");
     }
   };
-
+  
   return (
     <MainContainer>
       <Head1>Inicio de Sesion</Head1>
@@ -172,7 +176,12 @@ export default function Login({ navigation }) {
           />
         )} */}
 
-        <Button title="ENTRAR" color="#5B7FFF" onPress={getCredentials} />
+        {!userLogin ? (
+          <Button title="ENTRAR" color="#5B7FFF" onPress={getCredentials} />
+        ) : (
+          <Button title={userLogin} color="#5B7FFF" />
+        )}
+
         {noMatchCredentials === true ? (
           <Text style={{ color: "red", marginTop: 10 }}>
             Error al iniciar: Tu email o contraseña son incorrectos

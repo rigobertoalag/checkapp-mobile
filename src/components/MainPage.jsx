@@ -1,11 +1,18 @@
 import React, { useState } from "react";
-import { View, Text, Image, TouchableHighlight, Button } from "react-native";
+import { View, Text, Image, TouchableHighlight, Button, Alert  } from "react-native";
 import { useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import moment from "moment";
 
-import { GreyContainer, SmText, InfoContainer, SmTextTitle } from "../styles/index";
+import { MaterialIcons } from "@expo/vector-icons";
+
+import {
+  GreyContainer,
+  SmText,
+  InfoContainer,
+  SmTextTitle,
+} from "../styles/index";
 
 export default function MainPage({ navigation }) {
   const credentials = useSelector((state) => state.token.value);
@@ -51,12 +58,27 @@ export default function MainPage({ navigation }) {
       );
       const json = await response.json();
       const logout = json;
-      console.log('logout', logout)
-      navigation.navigate("Login")
+      console.log("logout", logout);
+      navigation.navigate("Login");
     } catch (error) {
       console.error(error);
     }
   };
+
+  const logOutAlert = () =>
+    Alert.alert(
+      "Cerrar Sesion",
+      "¿Estas seguro que deseas salir?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "OK", onPress: () => logOut() }
+      ]
+    );
+
 
   useFocusEffect(
     React.useCallback(() => {
@@ -66,8 +88,6 @@ export default function MainPage({ navigation }) {
       };
     }, [])
   );
-
-  console.log("checkTurn DDDD", checkTurn);
 
   return (
     <View style={{ height: "100%" }}>
@@ -81,7 +101,7 @@ export default function MainPage({ navigation }) {
           borderBottomLeftRadius: 5,
         }}
       >
-        <SmTextTitle>Bienvenido/a, {credentials.user.name}</SmTextTitle>
+        <SmTextTitle>Bienvenido/a, Test</SmTextTitle>
         <Image
           source={staticAvatar}
           style={{
@@ -95,6 +115,10 @@ export default function MainPage({ navigation }) {
         />
       </LinearGradient>
 
+      <TouchableHighlight style={{position: 'absolute', marginTop: '10%', marginLeft:'85%'}} onPress={logOutAlert} >
+        <MaterialIcons name="exit-to-app" size={40} color="white" />
+      </TouchableHighlight>
+
       {checkTurn ? (
         <>
           {checkTurn.beginTurn ? (
@@ -103,7 +127,7 @@ export default function MainPage({ navigation }) {
               start={[0.1, 0.8]}
               style={{
                 height: "15%",
-                width: "70%",
+                width: "50%",
                 position: "absolute",
                 top: "32%",
                 alignSelf: "center",
@@ -126,7 +150,7 @@ export default function MainPage({ navigation }) {
               start={[0.1, 0.8]}
               style={{
                 height: "15%",
-                width: "70%",
+                width: "50%",
                 position: "absolute",
                 top: "32%",
                 alignSelf: "center",
@@ -144,36 +168,129 @@ export default function MainPage({ navigation }) {
               </TouchableHighlight>
             </LinearGradient>
           )}
-          <GreyContainer>
-            <InfoContainer>
-              {!checkTurn.ins && !checkTurn.outs ? (
-                <SmText>
-                  ¡Buen día!, aun no haz iniciado ningun turno el dia de hoy.
-                </SmText>
-              ) : checkTurn.ins && !checkTurn.outs ? (
-                <SmText>
-                  Inicio de turno: {moment(checkTurn.ins.created_at).format("DD-MM-YY hh:mm")}, falta realizar tu salida...
-                </SmText>
-              ) : (
-                <SmText>
-                  Ultimo inicio: {moment(checkTurn.ins.created_at).format("DD-MM-YY hh:mm")}, ultima salida: {moment(checkTurn.outs.created_at).format("DD-MM-YY hh:mm")}
-                </SmText>
-              )}
-            </InfoContainer>
-            <Button
-        title='cerrar sesion'
-        onPress={logOut}
-      />
-          </GreyContainer>
+
+          {!checkTurn.ins && !checkTurn.outs ? (
+            <View style={{ flex: 1 }}>
+              <LinearGradient
+                colors={["#777777", "#979797"]}
+                start={[0.1, 0.8]}
+                style={{
+                  marginTop: "20%",
+                  height: 85,
+                  width: "80%",
+                  alignSelf: "center",
+                  borderRadius: 20,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    height: "100%",
+                    alignItems: "center",
+                  }}
+                >
+                  <View
+                    style={{
+                      width: "20%",
+                      marginLeft: "5%",
+                    }}
+                  >
+                    <MaterialIcons name="info" size={45} color="black" />
+                  </View>
+                  <View syle={{ width: "70%" }}>
+                    <Text style={{ alignSelf: "center" }}>
+                      ¡No haz marcado tu inicio de turno!
+                    </Text>
+                  </View>
+                </View>
+              </LinearGradient>
+            </View>
+          ) : (
+            <View style={{ flex: 1 }}>
+              <LinearGradient
+                colors={["#777777", "#979797"]}
+                start={[0.1, 0.8]}
+                style={{
+                  marginTop: "20%",
+                  height: '45%',
+                  width: "80%",
+                  alignSelf: "center",
+                  borderRadius: 20,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    height: "100%",
+                    alignItems: "center",
+                  }}
+                >
+                  <View
+                    style={{
+                      width: "20%",
+                      marginLeft: "5%",
+                    }}
+                  >
+                    <MaterialIcons name="info" size={45} color="black" />
+                  </View>
+                  <View syle={{ width: "70%" }}>
+                    <Text style={{ alignSelf: "center" }}>
+                      Inicio de turno:{" "}
+                      {moment(checkTurn.ins.created_at).format(
+                        "DD-MM-YY hh:mm"
+                      )}
+                    </Text>
+                    <Text style={{alignSelf: 'center', marginTop: '5%'}}>Falta realizar tu salida...</Text>
+                  </View>
+                </View>
+              </LinearGradient>
+            </View>
+          ) }
+
+          {/* Ultimo registro InfoContainer  */}
+          <View style={{ flex: 2 }}>
+            <LinearGradient
+              colors={["#777777", "#979797"]}
+              start={[0.1, 0.8]}
+              style={{
+                marginTop: "15%",
+                height: "28%",
+                width: "80%",
+                alignSelf: "center",
+                borderRadius: 20,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  height: "100%",
+                  alignItems: "center",
+                }}
+              >
+                <View
+                  style={{
+                    width: "20%",
+                    marginLeft: "5%",
+                  }}
+                >
+                  <MaterialIcons name="query-builder" size={45} color="black" />
+                </View>
+                <View syle={{ width: "70%" }}>
+                  <Text style={{ marginBottom: "5%", alignSelf: "center" }}>
+                    Ultimo turno registrado{" "}
+                  </Text>
+                  <Text style={{ marginBottom: "5%" }}>
+                    Ultima entrada: se toman del full
+                  </Text>
+                  <Text>Ultima salida: se toman del full </Text>
+                </View>
+              </View>
+            </LinearGradient>
+          </View>
         </>
       ) : (
         <Text style={{ alignSelf: "center", color: "black" }}>Cargando...</Text>
       )}
-
-      <Button
-        title='cerrar sesion'
-        onPress={logOut}
-      />
     </View>
   );
 }

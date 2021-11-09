@@ -56,7 +56,7 @@ export const SmTextTitle = styled.Text`
   font-size: 14px;
   line-height: 16px;
   text-align: center;
-  margin-top: 15%;
+  margin-top: 13%;
   color: rgba(250, 250, 250, 0.9);
 `;
 

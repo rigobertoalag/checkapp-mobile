@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, Image, TouchableHighlight, Button, Alert  } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableHighlight,
+  Button,
+  Alert,
+} from "react-native";
 import { useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -18,6 +25,7 @@ export default function MainPage({ navigation }) {
   const credentials = useSelector((state) => state.token.value);
 
   const [checkTurn, setCheckTurn] = useState();
+  const [checkFull, setCheckFull] = useState();
 
   const staticAvatar = { uri: "https://i.pravatar.cc/300?img=17" };
 
@@ -38,6 +46,28 @@ export default function MainPage({ navigation }) {
       const check = json;
 
       setCheckTurn(check);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getCheckFull = async () => {
+    try {
+      const response = await fetch(
+        "https://lara-api-sanctum.herokuapp.com/api/checkfull",
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "multipart/form-data",
+            Authorization: "Bearer " + credentials.token,
+          },
+        }
+      );
+      const json = await response.json();
+      const checkFull = json;
+
+      setCheckFull(checkFull);
     } catch (error) {
       console.error(error);
     }
@@ -66,23 +96,19 @@ export default function MainPage({ navigation }) {
   };
 
   const logOutAlert = () =>
-    Alert.alert(
-      "Cerrar Sesion",
-      "¿Estas seguro que deseas salir?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        { text: "OK", onPress: () => logOut() }
-      ]
-    );
-
+    Alert.alert("Cerrar Sesion", "¿Estas seguro que deseas salir?", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "OK", onPress: () => logOut() },
+    ]);
 
   useFocusEffect(
     React.useCallback(() => {
       getCheckTurn();
+      getCheckFull();
       return () => {
         setCheckTurn();
       };
@@ -115,7 +141,10 @@ export default function MainPage({ navigation }) {
         />
       </LinearGradient>
 
-      <TouchableHighlight style={{position: 'absolute', marginTop: '10%', marginLeft:'85%'}} onPress={logOutAlert} >
+      <TouchableHighlight
+        style={{ position: "absolute", marginTop: "10%", marginLeft: "85%" }}
+        onPress={logOutAlert}
+      >
         <MaterialIcons name="exit-to-app" size={40} color="white" />
       </TouchableHighlight>
 
@@ -205,14 +234,14 @@ export default function MainPage({ navigation }) {
                 </View>
               </LinearGradient>
             </View>
-          ) : (
+          ) : checkTurn.ins && !checkTurn.outs(
             <View style={{ flex: 1 }}>
               <LinearGradient
                 colors={["#777777", "#979797"]}
                 start={[0.1, 0.8]}
                 style={{
                   marginTop: "20%",
-                  height: '45%',
+                  height: "45%",
                   width: "80%",
                   alignSelf: "center",
                   borderRadius: 20,
@@ -240,14 +269,16 @@ export default function MainPage({ navigation }) {
                         "DD-MM-YY hh:mm"
                       )}
                     </Text>
-                    <Text style={{alignSelf: 'center', marginTop: '5%'}}>Falta realizar tu salida...</Text>
+                    <Text style={{ alignSelf: "center", marginTop: "5%" }}>
+                      Falta realizar tu salida...
+                    </Text>
                   </View>
                 </View>
               </LinearGradient>
             </View>
-          ) }
+          )}
 
-          {/* Ultimo registro InfoContainer  */}
+          {/* Ultimo registro completo InfoContainer  */}
           <View style={{ flex: 2 }}>
             <LinearGradient
               colors={["#777777", "#979797"]}
@@ -275,15 +306,25 @@ export default function MainPage({ navigation }) {
                 >
                   <MaterialIcons name="query-builder" size={45} color="black" />
                 </View>
-                <View syle={{ width: "70%" }}>
-                  <Text style={{ marginBottom: "5%", alignSelf: "center" }}>
-                    Ultimo turno registrado{" "}
-                  </Text>
-                  <Text style={{ marginBottom: "5%" }}>
-                    Ultima entrada: se toman del full
-                  </Text>
-                  <Text>Ultima salida: se toman del full </Text>
-                </View>
+                {checkFull ? (
+                  <View syle={{ width: "70%" }}>
+                    <Text style={{ marginBottom: "5%", alignSelf: "center" }}>
+                      Ultimo turno registrado{" "}
+                    </Text>
+                    <Text style={{ marginBottom: "5%" }}>
+                      Inicio de turno: {moment(checkFull.lastCheckFull.checkInDate).format(
+                        "DD-MM-YY hh:mm"
+                      )}
+                    </Text>
+                    <Text>
+                      Fin de turno: {moment(checkFull.lastCheckFull.checkOutDate).format(
+                        "DD-MM-YY hh:mm"
+                      )}
+                    </Text>
+                  </View>
+                ) : (
+                  <Text>Cargando...</Text>
+                )}
               </View>
             </LinearGradient>
           </View>

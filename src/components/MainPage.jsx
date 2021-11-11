@@ -1,33 +1,20 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableHighlight,
-  Button,
-  Alert,
-} from "react-native";
+import { View, Text, TouchableHighlight, Alert } from "react-native";
 import { useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import moment from "moment";
-
 import { MaterialIcons } from "@expo/vector-icons";
 
-import {
-  GreyContainer,
-  SmText,
-  InfoContainer,
-  SmTextTitle,
-} from "../styles/index";
+import InfoContainer from "./mainPage/InfoContainer";
+import InfoFullCheck from "./mainPage/InfoFullCheck";
+import Divider from "../styles/Divider";
+import Header from "./mainPage/Header";
 
 export default function MainPage({ navigation }) {
   const credentials = useSelector((state) => state.token.value);
 
   const [checkTurn, setCheckTurn] = useState();
   const [checkFull, setCheckFull] = useState();
-
-  const staticAvatar = { uri: "https://i.pravatar.cc/300?img=17" };
 
   const getCheckTurn = async () => {
     try {
@@ -111,170 +98,28 @@ export default function MainPage({ navigation }) {
       getCheckFull();
       return () => {
         setCheckTurn();
+        setCheckFull();
       };
     }, [])
   );
 
-  const infoCntr = () => {
-    if (!checkTurn.ins && !checkTurn.outs) {
-      <View style={{ flex: 1 }}>
-        <LinearGradient
-          colors={["#777777", "#979797"]}
-          start={[0.1, 0.8]}
-          style={{
-            marginTop: "20%",
-            height: "45%",
-            width: "80%",
-            alignSelf: "center",
-            borderRadius: 20,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              height: "100%",
-              alignItems: "center",
-            }}
-          >
-            <View
-              style={{
-                width: "20%",
-                marginLeft: "5%",
-              }}
-            >
-              <MaterialIcons name="info" size={45} color="black" />
-            </View>
-            <View syle={{ width: "70%" }}>
-              <Text style={{ alignSelf: "center" }}>
-                ¡No haz marcado tu inicio de turno!
-              </Text>
-            </View>
-          </View>
-        </LinearGradient>
-      </View>;
-    } else if (checkTurn.ins && !checkTurn.outs) {
-      <View style={{ flex: 1 }}>
-        <LinearGradient
-          colors={["#777777", "#979797"]}
-          start={[0.1, 0.8]}
-          style={{
-            marginTop: "20%",
-            height: "45%",
-            width: "80%",
-            alignSelf: "center",
-            borderRadius: 20,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              height: "100%",
-              alignItems: "center",
-            }}
-          >
-            <View
-              style={{
-                width: "20%",
-                marginLeft: "5%",
-              }}
-            >
-              <MaterialIcons name="info" size={45} color="black" />
-            </View>
-            <View syle={{ width: "70%" }}>
-              <Text style={{ alignSelf: "center" }}>
-                Inicio de turno:{" "}
-                {moment(checkTurn.ins.created_at).format("DD-MM-YY hh:mm")}
-              </Text>
-              <Text style={{ alignSelf: "center", marginTop: "5%" }}>
-                Falta realizar tu salida...
-              </Text>
-            </View>
-          </View>
-        </LinearGradient>
-      </View>;
-    } else if (checkTurn.ins && checkTurn.outs) {
-      <View style={{ flex: 1 }}>
-        <LinearGradient
-          colors={["#777777", "#979797"]}
-          start={[0.1, 0.8]}
-          style={{
-            marginTop: "20%",
-            height: "45%",
-            width: "80%",
-            alignSelf: "center",
-            borderRadius: 20,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              height: "100%",
-              alignItems: "center",
-            }}
-          >
-            <View
-              style={{
-                width: "20%",
-                marginLeft: "5%",
-              }}
-            >
-              <MaterialIcons name="info" size={45} color="black" />
-            </View>
-            <View syle={{ width: "70%" }}>
-              <Text style={{ alignSelf: "center" }}>
-                Inicio de turno:{" "}
-                {moment(checkTurn.ins.created_at).format("DD-MM-YY hh:mm")}
-              </Text>
-              <Text style={{ alignSelf: "center", marginTop: "5%" }}>
-                Fin de turno:{" "}
-                {moment(checkTurn.outs.created_at).format("DD-MM-YY hh:mm")}
-              </Text>
-            </View>
-          </View>
-        </LinearGradient>
-      </View>;
-    }
-  };
-
   return (
     <View style={{ height: "100%" }}>
-      <LinearGradient
-        colors={["#5B7FFF", "#001AFF"]}
-        start={[0.1, 0.8]}
-        style={{
-          height: "40%",
-          backgroundColor: "#5b7fff",
-          borderBottomRightRadius: 5,
-          borderBottomLeftRadius: 5,
-        }}
-      >
-        <SmTextTitle>Bienvenido/a, Test</SmTextTitle>
-        <Image
-          source={staticAvatar}
-          style={{
-            width: 156,
-            height: 156,
-            borderRadius: 100,
-            alignSelf: "center",
-            top: "30%",
-            position: "absolute",
-          }}
-        />
-      </LinearGradient>
+      {Header({ userName: credentials.user.name })}
 
       <TouchableHighlight
         style={{ position: "absolute", marginTop: "10%", marginLeft: "85%" }}
         onPress={logOutAlert}
       >
-        <MaterialIcons name="exit-to-app" size={40} color="white" />
+        <MaterialIcons name="exit-to-app" size={32} color="white" />
       </TouchableHighlight>
 
       {checkTurn ? (
         <>
           {checkTurn.beginTurn ? (
             <LinearGradient
-              colors={["#FF5630", "#E35F35"]}
-              start={[0.1, 0.8]}
+              colors={["#FF5630", "#ff754b"]}
+              start={[0.1, 0.3]}
               style={{
                 height: "15%",
                 width: "50%",
@@ -287,17 +132,18 @@ export default function MainPage({ navigation }) {
             >
               <TouchableHighlight
                 onPress={() => navigation.navigate("CheckOut")}
-                style={{ width: "100%", height: "100%" }}
+                style={{ height: "50%", flexDirection:'column', alignItems:'center'}}
               >
-                <Text style={{ alignSelf: "center", color: "white" }}>
-                  Terminar turno
-                </Text>
+                <MaterialIcons name="exit-to-app" size={45} color="black" style={{marginTop: "10%"}}/>
               </TouchableHighlight>
+              <Text style={{ alignSelf: "center", color: "black", fontSize: 22 }}>
+                TERMINAR TURNO
+              </Text>
             </LinearGradient>
           ) : (
             <LinearGradient
-              colors={["#38CB89", "#48AC7F"]}
-              start={[0.1, 0.8]}
+              colors={["#38CB89", "#70e4b0"]}
+              start={[0.1, 0.3]}
               style={{
                 height: "15%",
                 width: "50%",
@@ -310,150 +156,19 @@ export default function MainPage({ navigation }) {
             >
               <TouchableHighlight
                 onPress={() => navigation.navigate("CheckIn")}
-                style={{ width: "100%", height: "100%" }}
+                style={{ height: "50%", flexDirection:'column', alignItems: 'center'}}
               >
-                <Text style={{ alignSelf: "center", color: "white" }}>
-                  Inicar turno
-                </Text>
+                <MaterialIcons name="assignment-ind" size={45} color="black" style={{marginTop: "10%"}}/>
               </TouchableHighlight>
+              <Text style={{ alignSelf: "center", color: "black", fontSize: 24 }}>
+                INICIAR TURNO
+              </Text>
             </LinearGradient>
           )}
 
-          {!checkTurn.ins && !checkTurn.outs ? (
-            <View style={{ flex: 1 }}>
-              <LinearGradient
-                colors={["#777777", "#979797"]}
-                start={[0.1, 0.8]}
-                style={{
-                  marginTop: "20%",
-                  height: 85,
-                  width: "80%",
-                  alignSelf: "center",
-                  borderRadius: 20,
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    height: "100%",
-                    alignItems: "center",
-                  }}
-                >
-                  <View
-                    style={{
-                      width: "20%",
-                      marginLeft: "5%",
-                    }}
-                  >
-                    <MaterialIcons name="info" size={45} color="black" />
-                  </View>
-                  <View syle={{ width: "70%" }}>
-                    <Text style={{ alignSelf: "center" }}>
-                      ¡No haz marcado tu inicio de turno!
-                    </Text>
-                  </View>
-                </View>
-              </LinearGradient>
-            </View>
-          ) : (
-            checkTurn.ins &&
-            !checkTurn.outs(
-              <View style={{ flex: 1 }}>
-                <LinearGradient
-                  colors={["#777777", "#979797"]}
-                  start={[0.1, 0.8]}
-                  style={{
-                    marginTop: "20%",
-                    height: "45%",
-                    width: "80%",
-                    alignSelf: "center",
-                    borderRadius: 20,
-                  }}
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      height: "100%",
-                      alignItems: "center",
-                    }}
-                  >
-                    <View
-                      style={{
-                        width: "20%",
-                        marginLeft: "5%",
-                      }}
-                    >
-                      <MaterialIcons name="info" size={45} color="black" />
-                    </View>
-                    <View syle={{ width: "70%" }}>
-                      <Text style={{ alignSelf: "center" }}>
-                        Inicio de turno:{" "}
-                        {moment(checkTurn.ins.created_at).format(
-                          "DD-MM-YY hh:mm"
-                        )}
-                      </Text>
-                      <Text style={{ alignSelf: "center", marginTop: "5%" }}>
-                        Falta realizar tu salida...
-                      </Text>
-                    </View>
-                  </View>
-                </LinearGradient>
-              </View>
-            )
-          )}
-
-          {/* Ultimo registro completo InfoContainer  */}
-          <View style={{ flex: 2 }}>
-            <LinearGradient
-              colors={["#777777", "#979797"]}
-              start={[0.1, 0.8]}
-              style={{
-                marginTop: "15%",
-                height: "28%",
-                width: "80%",
-                alignSelf: "center",
-                borderRadius: 20,
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  height: "100%",
-                  alignItems: "center",
-                }}
-              >
-                <View
-                  style={{
-                    width: "20%",
-                    marginLeft: "5%",
-                  }}
-                >
-                  <MaterialIcons name="query-builder" size={45} color="black" />
-                </View>
-                {checkFull ? (
-                  <View syle={{ width: "70%" }}>
-                    <Text style={{ marginBottom: "5%", alignSelf: "center" }}>
-                      Ultimo turno registrado{" "}
-                    </Text>
-                    <Text style={{ marginBottom: "5%" }}>
-                      Inicio de turno:{" "}
-                      {moment(checkFull.lastCheckFull.checkInDate).format(
-                        "DD-MM-YY hh:mm"
-                      )}
-                    </Text>
-                    <Text>
-                      Fin de turno:{" "}
-                      {moment(checkFull.lastCheckFull.checkOutDate).format(
-                        "DD-MM-YY hh:mm"
-                      )}
-                    </Text>
-                  </View>
-                ) : (
-                  <Text>Cargando...</Text>
-                )}
-              </View>
-            </LinearGradient>
-          </View>
+          {InfoContainer({ checkTurn: checkTurn })}
+          {Divider({ text: "Historico" })}
+          {InfoFullCheck({ checkFull: checkFull })}
         </>
       ) : (
         <Text style={{ alignSelf: "center", color: "black" }}>Cargando...</Text>

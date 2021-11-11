@@ -115,6 +115,127 @@ export default function MainPage({ navigation }) {
     }, [])
   );
 
+  const infoCntr = () => {
+    if (!checkTurn.ins && !checkTurn.outs) {
+      <View style={{ flex: 1 }}>
+        <LinearGradient
+          colors={["#777777", "#979797"]}
+          start={[0.1, 0.8]}
+          style={{
+            marginTop: "20%",
+            height: "45%",
+            width: "80%",
+            alignSelf: "center",
+            borderRadius: 20,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              height: "100%",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                width: "20%",
+                marginLeft: "5%",
+              }}
+            >
+              <MaterialIcons name="info" size={45} color="black" />
+            </View>
+            <View syle={{ width: "70%" }}>
+              <Text style={{ alignSelf: "center" }}>
+                ¡No haz marcado tu inicio de turno!
+              </Text>
+            </View>
+          </View>
+        </LinearGradient>
+      </View>;
+    } else if (checkTurn.ins && !checkTurn.outs) {
+      <View style={{ flex: 1 }}>
+        <LinearGradient
+          colors={["#777777", "#979797"]}
+          start={[0.1, 0.8]}
+          style={{
+            marginTop: "20%",
+            height: "45%",
+            width: "80%",
+            alignSelf: "center",
+            borderRadius: 20,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              height: "100%",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                width: "20%",
+                marginLeft: "5%",
+              }}
+            >
+              <MaterialIcons name="info" size={45} color="black" />
+            </View>
+            <View syle={{ width: "70%" }}>
+              <Text style={{ alignSelf: "center" }}>
+                Inicio de turno:{" "}
+                {moment(checkTurn.ins.created_at).format("DD-MM-YY hh:mm")}
+              </Text>
+              <Text style={{ alignSelf: "center", marginTop: "5%" }}>
+                Falta realizar tu salida...
+              </Text>
+            </View>
+          </View>
+        </LinearGradient>
+      </View>;
+    } else if (checkTurn.ins && checkTurn.outs) {
+      <View style={{ flex: 1 }}>
+        <LinearGradient
+          colors={["#777777", "#979797"]}
+          start={[0.1, 0.8]}
+          style={{
+            marginTop: "20%",
+            height: "45%",
+            width: "80%",
+            alignSelf: "center",
+            borderRadius: 20,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              height: "100%",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                width: "20%",
+                marginLeft: "5%",
+              }}
+            >
+              <MaterialIcons name="info" size={45} color="black" />
+            </View>
+            <View syle={{ width: "70%" }}>
+              <Text style={{ alignSelf: "center" }}>
+                Inicio de turno:{" "}
+                {moment(checkTurn.ins.created_at).format("DD-MM-YY hh:mm")}
+              </Text>
+              <Text style={{ alignSelf: "center", marginTop: "5%" }}>
+                Fin de turno:{" "}
+                {moment(checkTurn.outs.created_at).format("DD-MM-YY hh:mm")}
+              </Text>
+            </View>
+          </View>
+        </LinearGradient>
+      </View>;
+    }
+  };
+
   return (
     <View style={{ height: "100%" }}>
       <LinearGradient
@@ -234,48 +355,51 @@ export default function MainPage({ navigation }) {
                 </View>
               </LinearGradient>
             </View>
-          ) : checkTurn.ins && !checkTurn.outs(
-            <View style={{ flex: 1 }}>
-              <LinearGradient
-                colors={["#777777", "#979797"]}
-                start={[0.1, 0.8]}
-                style={{
-                  marginTop: "20%",
-                  height: "45%",
-                  width: "80%",
-                  alignSelf: "center",
-                  borderRadius: 20,
-                }}
-              >
-                <View
+          ) : (
+            checkTurn.ins &&
+            !checkTurn.outs(
+              <View style={{ flex: 1 }}>
+                <LinearGradient
+                  colors={["#777777", "#979797"]}
+                  start={[0.1, 0.8]}
                   style={{
-                    flexDirection: "row",
-                    height: "100%",
-                    alignItems: "center",
+                    marginTop: "20%",
+                    height: "45%",
+                    width: "80%",
+                    alignSelf: "center",
+                    borderRadius: 20,
                   }}
                 >
                   <View
                     style={{
-                      width: "20%",
-                      marginLeft: "5%",
+                      flexDirection: "row",
+                      height: "100%",
+                      alignItems: "center",
                     }}
                   >
-                    <MaterialIcons name="info" size={45} color="black" />
+                    <View
+                      style={{
+                        width: "20%",
+                        marginLeft: "5%",
+                      }}
+                    >
+                      <MaterialIcons name="info" size={45} color="black" />
+                    </View>
+                    <View syle={{ width: "70%" }}>
+                      <Text style={{ alignSelf: "center" }}>
+                        Inicio de turno:{" "}
+                        {moment(checkTurn.ins.created_at).format(
+                          "DD-MM-YY hh:mm"
+                        )}
+                      </Text>
+                      <Text style={{ alignSelf: "center", marginTop: "5%" }}>
+                        Falta realizar tu salida...
+                      </Text>
+                    </View>
                   </View>
-                  <View syle={{ width: "70%" }}>
-                    <Text style={{ alignSelf: "center" }}>
-                      Inicio de turno:{" "}
-                      {moment(checkTurn.ins.created_at).format(
-                        "DD-MM-YY hh:mm"
-                      )}
-                    </Text>
-                    <Text style={{ alignSelf: "center", marginTop: "5%" }}>
-                      Falta realizar tu salida...
-                    </Text>
-                  </View>
-                </View>
-              </LinearGradient>
-            </View>
+                </LinearGradient>
+              </View>
+            )
           )}
 
           {/* Ultimo registro completo InfoContainer  */}
@@ -312,12 +436,14 @@ export default function MainPage({ navigation }) {
                       Ultimo turno registrado{" "}
                     </Text>
                     <Text style={{ marginBottom: "5%" }}>
-                      Inicio de turno: {moment(checkFull.lastCheckFull.checkInDate).format(
+                      Inicio de turno:{" "}
+                      {moment(checkFull.lastCheckFull.checkInDate).format(
                         "DD-MM-YY hh:mm"
                       )}
                     </Text>
                     <Text>
-                      Fin de turno: {moment(checkFull.lastCheckFull.checkOutDate).format(
+                      Fin de turno:{" "}
+                      {moment(checkFull.lastCheckFull.checkOutDate).format(
                         "DD-MM-YY hh:mm"
                       )}
                     </Text>
